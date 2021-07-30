@@ -4,11 +4,11 @@ import { GlobalStyle } from "../globalStyles";
 import Modal from "./modal";
 
 const Container = styled.div`
-    display: flex;
+    ${'' /* display: flex; */}
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    width: 100vw;
+    ${'' /* height: 50vh;
+    width: 50vw; */}
    
 `
 
@@ -16,13 +16,15 @@ const Container = styled.div`
 
 export default function BreedList() {
     const [breeds,setBreeds] = useState([]);
-
+    const [specDog, setSpecDog] = useState('');
     const [showModal,setShowModal] = useState(false);
 
-    const openModal = () => {
-        setShowModal(prev => !prev);
+    const openModal = (e) => {
+        setShowModal(showModal => !showModal);
+        setSpecDog(e.target.id);
+        
     };
-
+    console.log(specDog);
     useEffect( () => {
         const fetchDoggos = async () => {
             const dogAPI = 'https://dog.ceo/api/breeds/list/all';
@@ -30,7 +32,7 @@ export default function BreedList() {
             try{
                 const getDogs = await fetch(dogAPI);
                 const dogList = await getDogs.json();
-                console.log(dogList.message);
+                
                 const doggoList = []
                 const combineNames = (name1, name2) => {
                     return `${name1} ${name2}`
@@ -48,14 +50,15 @@ export default function BreedList() {
         fetchDoggos();
     },[]);
 
-    const dogLinks = breeds.map((dog,idx)=> <h3> <a href="#modal" id={dog} key={dog + idx} onClick={() => setShowModal(prev => !prev)}>{dog}</a> <br/></h3> )
+    const dogLinks = breeds.map((dog,idx)=> <button> <a href="#modal" id={dog} key={dog + idx} onClick={e => openModal(e)} >{dog}</a> <br/></button> )
 
     return (
         <>
-        
+        <Container>
         {dogLinks}
-        <Modal id="modal"  showModal={showModal} setShowModal={setShowModal}/>
+        <Modal id="modal"  showModal={showModal} setShowModal={setShowModal} dogPics={specDog}/>
         <GlobalStyle/>
+        </Container>
        
         </>
     )

@@ -2,19 +2,19 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { MdClose }from 'react-icons/md'
 
-const Background = styled.div`
-    width: 100;
-    height: 100;
-    background: rgba(0,0,0,0.8);
-    position: fixed;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-`
+// const Background = styled.div`
+//     width: 100;
+//     height: 100;
+//     background: rgba(0,0,0,0.8);
+//     position: fixed;
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+// `
 
 const ModalWrapper = styled.div`
-    width: 800px;
-    height: 500px;
+    width: 400px;
+    height: 250px;
     box-shadow: 0 5px 16px rgba(0,0,0,0.2);
     background: #fff;
     color: #000;
@@ -46,18 +46,49 @@ const CloseModalButton = styled(MdClose)`
 
 
 
-export default function Modal({ showModal, setShowModal })  {
-
+export default function Modal({ showModal, dogPics })  {
+    const [useLess, setUseless] = useState('')
     //const randomImg = `https://dog.ceo/api/breed/${}/images/random`
+    console.log('spec',dogPics);
+    useEffect( () => {
+        const randomImg = () => {
+            let randomDogAPI
+            if (dogPics.length > 0) {
+                if (dogPics.split(' ').length > 1){ 
+                    const sepWords = dogPics.split(' ');
+                    randomDogAPI = `https://dog.ceo/api/breed/${sepWords[1]}/${sepWords[0]}/images/random`;
+                }
+                else randomDogAPI = `https://dog.ceo/api/breed/${dogPics}/images/random`;
+            }
+            else {
+                console.log('returning out of func: ',dogPics)
+                return
+            };
 
+            try{
+                fetch(randomDogAPI)
+                .then(resp => resp.json())
+                .then(res => {
+                    console.log(res);
+                    setUseless(res.message);
+                })
+            } catch (err) {
+                console.log(err.message);
+            }
+        }
+
+        randomImg();
+    },[dogPics])
+
+    
     return (
         <>
         {showModal ? (
-            <Background>
+            
                 <ModalWrapper showModal={showModal}>
-                    <ModalImg src=''/>
+                    <ModalImg src={useLess}/>
                 </ModalWrapper>
-            </Background>):
+            ):
             null
             }
         
